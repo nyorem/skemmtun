@@ -4,8 +4,7 @@ module Main where
 
 import Control.Exception
 import Control.Lens ( (&), (^.), (?~) )
-import Control.Monad ( void )
-import qualified Data.ByteString.Lazy as B
+import Control.Monad ( forM_, void )
 import Data.Function ( on )
 import Data.List
 import Data.Ord
@@ -46,6 +45,7 @@ verifyCredentials :: Credentials -> IO ()
 verifyCredentials creds = do
     void $ getWith (opts creds) "http://myanimelist.net/api/account/verify_credentials.xml" `catch` handler
     where handler (StatusCodeException _ _ _) = error "Credentials verification failed!"
+          handler _                           = error "Credentials verification failed!"
 
 listAll :: Credentials -> Name -> String -> IO [(T.Text, Maybe MyStatus)]
 listAll creds ty uname = do
@@ -81,14 +81,29 @@ toMyStatus 4 = Just Dropped
 toMyStatus 6 = Just Planned
 toMyStatus _ = Nothing
 
-organize :: [(T.Text, Maybe MyStatus)] -> [(Maybe MyStatus, [T.Text])]
+organize :: (Eq b) => [(a, b)] -> [(b, [a])]
 organize =
     map (\xs -> (snd . head $ xs, map fst xs)) . groupBy ((==) `on` snd)
+
+newline :: IO ()
+newline =
+    putStrLn ""
+
+display :: String -> [(Maybe MyStatus, [T.Text])] -> IO ()
+display p xs = do
+    putStrLn p
+    forM_ xs $ \(st, ys) -> do
+        case st of
+          Nothing -> return ()
+          Just s -> do
+              print s
+              putStrLn $ T.unpack $ T.unlines ys
+              newline
 
 main :: IO ()
 main = do
     creds <- readCredentials credentialsFile
     verifyCredentials creds
-    animeList creds "nyorem" >>= print . organize
-    mangaList creds "nyorem" >>= print . organize
+    animeList creds "nyorem" >>= display "Animes:" . organize
+    mangaList creds "nyorem" >>= display "Mangas:" . organize
 
