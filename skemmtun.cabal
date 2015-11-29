@@ -19,9 +19,10 @@ executable skemmtun
   -- other-extensions:    
   build-depends:       base >=4.8 && <4.9,
                        bytestring >=0.10 && <0.11,
+                       http-client >=0.4 && <0.5,
                        lens >=4.5 && <5,
+                       text >=1.2 && <1.3,
                        wreq >=0.4 && <0.5,
-                       xml-conduit >=1.3 && <1.4,
-                       text >=1.2 && <1.3
+                       xml-conduit >=1.3 && <1.4
   hs-source-dirs:      src
   default-language:    Haskell2010
