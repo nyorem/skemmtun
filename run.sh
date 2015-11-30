@@ -1,4 +1,4 @@
 #! /usr/bin/env bash
 
-stack build && stack exec skemmtun
+stack build && stack exec mal
 

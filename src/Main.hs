@@ -16,6 +16,8 @@ import Network.Wreq
 import Text.XML
 import Text.XML.Cursor
 
+import MAL.Types
+
 credentialsFile :: FilePath
 credentialsFile =
     "mal.txt"
@@ -49,12 +51,13 @@ verifyCredentials creds = do
 
 listAll :: Credentials -> Name -> String -> IO [(T.Text, Maybe MyStatus)]
 listAll creds ty uname = do
-    let url = concat ["http://myanimelist.net/malappinfo.php?u=", uname, "&status=all&type=", T.unpack $ nameLocalName ty ]
+    let url = concat ["http://myanimelist.net/malappinfo.php?u=", uname, "&status=all&type=", T.unpack . nameLocalName $ ty ]
         opts' = opts creds
     r <- getWith opts' url
-    let cur      = fromDocument $ parseLBS_ def $ r ^. responseBody
-        titles   = cur $| element "myanimelist" &/ element ty &/ element "series_title" &/ content
-        statuses'= cur $| element "myanimelist" &/ element ty &/ element "my_status" &/ content
+    let cur      = fromDocument . parseLBS_ def $ r ^. responseBody
+        axis     = element "myanimelist" &/ element ty
+        titles   = cur $| axis &/ element "series_title" &/ content
+        statuses'= cur $| axis &/ element "my_status" &/ content
         statuses = map (\s -> either (error "Error during status parsing") (toMyStatus . fst) $ T.decimal s) statuses'
     return $ sortBy (comparing snd) $ zip titles statuses
 
