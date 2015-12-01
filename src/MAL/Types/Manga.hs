@@ -12,16 +12,25 @@ import Utils
 
 data MangaType = Tankobon
                | Novel
+               | OneShot
+               | Doujin
+               | Manhwa
+               | Manhua
                deriving Show
 
 toMangaType :: Int -> Maybe MangaType
 toMangaType 1 = Just Tankobon
 toMangaType 2 = Just Novel
+toMangaType 3 = Just OneShot
+toMangaType 4 = Just Doujin
+toMangaType 5 = Just Manhwa
+toMangaType 6 = Just Manhua
 toMangaType _ = Nothing
 
 -- TODO: add start/end dates
 data Manga =
     Manga { _mangaName          :: T.Text           -- series_title
+          , _mangaId            :: Int              -- series_mangadb_id
           , _mangaStatus        :: Maybe MyStatus   -- my_status
           , _mangaReadChapters  :: Int              -- my_read_chapters
           , _mangaTotalChapters :: Int              -- series_chapters
@@ -36,6 +45,7 @@ makeLenses ''Manga
 mangaAttributes :: [Name]
 mangaAttributes =
     [ "series_title"
+    , "series_mangadb_id"
     , "my_status"
     , "my_read_chapters"
     , "series_chapters"
@@ -48,10 +58,11 @@ mangaAttributes =
 
 instance Show Manga where
     show m =
-        untabs [ T.unpack $ _mangaName m
-                , show $ _mangaScore m
-                , show (_mangaReadChapters m) ++ "/" ++ show (_mangaTotalChapters m)
-                , show (_mangaReadVolumes m) ++ "/" ++ show (_mangaTotalVolumes m)
-                , maybe "" show $ _mangaType m
-                ]
+        untabs [ show $ _mangaId m
+               , T.unpack $ _mangaName m
+               , show $ _mangaScore m
+               , show (_mangaReadChapters m) ++ "/" ++ show (_mangaTotalChapters m)
+               , show (_mangaReadVolumes m) ++ "/" ++ show (_mangaTotalVolumes m)
+               , maybe "" show $ _mangaType m
+               ]
 

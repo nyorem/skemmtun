@@ -28,8 +28,9 @@ listAttributes creds ty uname attrs = do
 animeList :: Credentials -> String -> IO [Anime]
 animeList creds uname = do
     res <- listAttributes creds "anime" uname animeAttributes
-    let (titles:statuses:watched_eps:series_eps:scores:tags:types:[]) = res
+    let (titles:ids:statuses:watched_eps:series_eps:scores:tags:types:[]) = res
         len          = length titles
+        ids'         = map textToInt ids
         statuses'    = map (toMyStatus . textToInt) statuses
         watched_eps' = map textToInt watched_eps
         series_eps'  = map textToInt series_eps
@@ -37,6 +38,7 @@ animeList creds uname = do
         tags'        = extendList len "" tags
         types'       = map (toAnimeType . textToInt) types
     return $ getZipList $ Anime <$> ZipList titles
+                                <*> ZipList ids'
                                 <*> ZipList statuses'
                                 <*> ZipList watched_eps'
                                 <*> ZipList series_eps'
@@ -47,8 +49,9 @@ animeList creds uname = do
 mangaList :: Credentials -> String -> IO [Manga]
 mangaList creds uname = do
     res <- listAttributes creds "manga" uname mangaAttributes
-    let (names:statuses:read_chaps:series_chaps:read_vols:series_vols:scores:tags:types:[]) = res
+    let (names:ids:statuses:read_chaps:series_chaps:read_vols:series_vols:scores:tags:types:[]) = res
         len           = length names
+        ids'          = map textToInt ids
         statuses'     = map (toMyStatus . textToInt) statuses
         read_chaps'   = map textToInt read_chaps
         series_chaps' = map textToInt series_chaps
@@ -58,6 +61,7 @@ mangaList creds uname = do
         tags'         = extendList len "" tags
         types'        = map (toMangaType . textToInt) types
     return $ getZipList $ Manga <$> ZipList names
+                                <*> ZipList ids'
                                 <*> ZipList statuses'
                                 <*> ZipList read_chaps'
                                 <*> ZipList series_chaps'
