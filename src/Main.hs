@@ -69,20 +69,6 @@ mangaList :: Credentials -> String -> IO [(T.Text, Maybe MyStatus)]
 mangaList creds =
     listAll creds "manga"
 
-data MyStatus = Current
-              | Completed
-              | OnHold
-              | Dropped
-              | Planned
-              deriving (Eq, Ord, Show)
-
-toMyStatus :: Int -> Maybe MyStatus
-toMyStatus 1 = Just Current
-toMyStatus 2 = Just Completed
-toMyStatus 3 = Just OnHold
-toMyStatus 4 = Just Dropped
-toMyStatus 6 = Just Planned
-toMyStatus _ = Nothing
 
 organize :: (Eq b) => [(a, b)] -> [(b, [a])]
 organize =
