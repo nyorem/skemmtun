@@ -1,4 +1,4 @@
 #! /usr/bin/env bash
 
-stack build && stack exec mal
+stack build && stack exec -- mal $*
 

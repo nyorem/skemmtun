@@ -15,10 +15,15 @@ cabal-version:       >=1.10
 executable mal
   ghc-options:         -Wall -O2
   main-is:             Main.hs
-  other-modules:       MAL.API,
+  other-modules:       MAL,
+                       MAL.API,
                        MAL.API.List,
                        MAL.API.Verify,
                        MAL.Credentials,
+                       MAL.Command,
+                       MAL.Command.Execute,
+                       MAL.Command.Parse,
+                       MAL.Command.Types,
                        MAL.Types,
                        MAL.Types.Common,
                        MAL.Types.Anime,
