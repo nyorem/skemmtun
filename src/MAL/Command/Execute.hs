@@ -1,7 +1,8 @@
 module MAL.Command.Execute where
 
 import Control.Monad ( forM_ )
-import qualified Data.Text as T
+import Data.List
+import Data.Ord
 
 import MAL.API
 import MAL.Credentials
@@ -12,11 +13,10 @@ import Utils
 executeCommand :: Credentials -> Command -> IO ()
 executeCommand creds (List m uname) =
     case m of
-      AnimeMode -> animeList creds uname >>= display "Animes:" . organize
-      MangaMode -> mangaList creds uname >>= display "Mangas:" . organize
+      AnimeMode -> animeList creds uname >>= display "Animes:" . sortAndOrganizeBy _animeStatus
+      MangaMode -> mangaList creds uname >>= display "Mangas:" . sortAndOrganizeBy _mangaStatus
 
-
-display :: String -> [(Maybe MyStatus, [T.Text])] -> IO ()
+display :: (Show a, Show b) => String -> [(Maybe b, [a])] -> IO ()
 display p xs = do
     putStrLn p
     forM_ xs $ \(st, ys) -> do
@@ -24,6 +24,10 @@ display p xs = do
           Nothing -> return ()
           Just s -> do
               print s
-              putStrLn $ T.unpack $ T.unlines ys
+              putStrLn $ unlines $ map (("- " ++) . show) ys
               newline
+
+sortAndOrganizeBy :: Ord b => (a -> b) -> [a] -> [(b, [a])]
+sortAndOrganizeBy f =
+    organizeBy f . sortBy (comparing f)
 
