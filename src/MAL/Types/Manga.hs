@@ -60,9 +60,9 @@ instance Show Manga where
     show m =
         untabs [ show $ _mangaId m
                , T.unpack $ _mangaName m
-               , show $ _mangaScore m
-               , show (_mangaReadChapters m) ++ "/" ++ show (_mangaTotalChapters m)
-               , show (_mangaReadVolumes m) ++ "/" ++ show (_mangaTotalVolumes m)
+               , showInt $ _mangaScore m
+               , show (_mangaReadChapters m) ++ "/" ++ showInt (_mangaTotalChapters m)
+               , show (_mangaReadVolumes m) ++ "/" ++ showInt (_mangaTotalVolumes m)
                , maybe "" show $ _mangaType m
                ]
 

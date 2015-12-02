@@ -28,3 +28,7 @@ untabs :: [String] -> String
 untabs =
     intercalate ['\t']
 
+showInt :: Int -> String
+showInt 0 = "-"
+showInt x = show x
+

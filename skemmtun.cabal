@@ -28,6 +28,7 @@ executable mal
                        MAL.Types.Common,
                        MAL.Types.Anime,
                        MAL.Types.Manga,
+                       Pretty,
                        Utils
   build-depends:       base >=4.8 && <4.9,
                        bytestring >=0.10 && <0.11,

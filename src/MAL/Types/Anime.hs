@@ -56,8 +56,8 @@ instance Show Anime where
     show a =
         untabs [ show $ _animeId a
                , T.unpack $ _animeName a
-               , show $ _animeScore a
+               , showInt $ _animeScore a
                , maybe "" show $ _animeType a
-               , show (_animeWatchedEpisodes a) ++ "/" ++ show (_animeTotalEpisodes a)
+               , show (_animeWatchedEpisodes a) ++ "/" ++ showInt (_animeTotalEpisodes a)
                ]
 
