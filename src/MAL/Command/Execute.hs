@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module MAL.Command.Execute where
 
 import Control.Monad ( forM_ )
@@ -17,6 +19,40 @@ executeCommand creds (List m uname) =
     case m of
       AnimeMode -> animeList creds uname >>= displayAnimes . sortAndOrganizeBy _animeStatus
       MangaMode -> mangaList creds uname >>= displayMangas . sortAndOrganizeBy _mangaStatus
+
+executeCommand creds (Inc m name) =
+    case m of
+      AnimeMode -> do
+          let uname = fst creds
+          animes <- animeList creds uname
+          let manime = find (\a -> _animeName a == name) animes
+          case manime of
+            Nothing -> error $ "Anime " ++ (T.unpack name) ++ " not found!"
+            Just anime -> do
+                let n      = _animeId anime
+                    anime' = incrWatchedEpisodes anime
+                update creds anime' n "anime"
+      MangaMode -> do
+          let uname = fst creds
+          mangas <- mangaList creds uname
+          let mmanga = find (\a -> _mangaName a == name) mangas
+          case mmanga of
+            Nothing -> error $ "Manga " ++ (T.unpack name) ++ " not found!"
+            Just manga -> do
+                let n      = _mangaId manga
+                    manga' = incrReadChapters manga
+                update creds manga' n "manga"
+
+executeCommand creds (IncVolume name) = do
+    let uname = fst creds
+    mangas <- mangaList creds uname
+    let mmanga = find (\a -> _mangaName a == name) mangas
+    case mmanga of
+      Nothing -> error $ "Manga " ++ (T.unpack name) ++ " not found!"
+      Just manga -> do
+          let n      = _mangaId manga
+              manga' = incrReadVolumes manga
+          update creds manga' n "manga"
 
 displayAnimes :: [(Maybe MyStatus, [Anime])] -> IO ()
 displayAnimes xs =

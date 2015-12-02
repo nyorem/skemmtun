@@ -1,5 +1,7 @@
 module MAL.Types.Common where
 
+import qualified Data.ByteString as BS
+
 data MyStatus = Current
               | Completed
               | OnHold
@@ -23,7 +25,9 @@ fromMyStatus (Just Dropped)   = 4
 fromMyStatus (Just Planned)   = 6
 fromMyStatus Nothing          = 0
 
+type Id = Int
+
 -- | Serialize a type to XML.
 class ToXML a where
-    toXml :: a -> String
+    toXml :: a -> BS.ByteString
 

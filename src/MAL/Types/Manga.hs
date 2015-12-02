@@ -4,6 +4,7 @@
 module MAL.Types.Manga where
 
 import Control.Lens
+import qualified Data.ByteString.Char8 as BS
 import qualified Data.Text as T
 import Text.XML
 
@@ -30,7 +31,7 @@ toMangaType _ = Nothing
 -- TODO: add start/end dates
 data Manga =
     Manga { _mangaName          :: T.Text           -- series_title
-          , _mangaId            :: Int              -- series_mangadb_id
+          , _mangaId            :: Id               -- series_mangadb_id
           , _mangaStatus        :: Maybe MyStatus   -- my_status
           , _mangaReadChapters  :: Int              -- my_read_chapters
           , _mangaTotalChapters :: Int              -- series_chapters
@@ -45,6 +46,7 @@ makeLenses ''Manga
 incrReadChapters :: Manga -> Manga
 incrReadChapters =
     over mangaReadChapters (+1)
+
 incrReadVolumes :: Manga -> Manga
 incrReadVolumes =
     over mangaReadVolumes (+1)
@@ -83,24 +85,24 @@ instance Show Manga where
 
 instance ToXML Manga where
     toXml m =
-        unlines [ "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-                , "<entry>"
-                , "\t<chapter>" ++ show (_mangaReadChapters m) ++ "</chapter>"
-                , "\t<volume>" ++ show (_mangaReadVolumes m) ++ "</volume>"
-                , "\t<status>" ++ show (fromMyStatus $ _mangaStatus m) ++ "</status>"
-                , "\t<score>" ++ show (_mangaScore m) ++ "</score>"
-                , "\t<downloaded_chapters></downloaded_chapters>"
-                , "\t<times_reread></times_reread>"
-                , "\t<reread_value></reread_value>"
-                , "\t<date_start></date_start>"
-                , "\t<date_finish></date_finish>"
-                , "\t<priority></priority>"
-                , "\t<enable_discussion></enable_discussion>"
-                , "\t<enable_rereading></enable_rereading>"
-                , "\t<comments></comments>"
-                , "\t<scan_group></scan_group>"
-                , "\t<tags>" ++ T.unpack (_mangaTags m) ++ "</tags>"
-                , "\t<retail_volumes></retail_volumes>"
-                , "</entry>"
-                ]
+        BS.pack $ unlines [ "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+                          , "<entry>"
+                          , "\t<chapter>" ++ show (_mangaReadChapters m) ++ "</chapter>"
+                          , "\t<volume>" ++ show (_mangaReadVolumes m) ++ "</volume>"
+                          , "\t<status>" ++ show (fromMyStatus $ _mangaStatus m) ++ "</status>"
+                          , "\t<score>" ++ show (_mangaScore m) ++ "</score>"
+                          , "\t<downloaded_chapters></downloaded_chapters>"
+                          , "\t<times_reread></times_reread>"
+                          , "\t<reread_value></reread_value>"
+                          , "\t<date_start></date_start>"
+                          , "\t<date_finish></date_finish>"
+                          , "\t<priority>1</priority>"
+                          , "\t<enable_discussion></enable_discussion>"
+                          , "\t<enable_rereading></enable_rereading>"
+                          , "\t<comments></comments>"
+                          , "\t<scan_group></scan_group>"
+                          , "\t<tags>" ++ T.unpack (_mangaTags m) ++ "</tags>"
+                          , "\t<retail_volumes></retail_volumes>"
+                          , "</entry>"
+                          ]
 

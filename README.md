@@ -25,14 +25,26 @@ password = bar
 
 ## Commands included
 
-- list:
+- list (mangas / animes):
 ```
-skemmtun manga list username
-skemmtun anime list username
+mal manga list username
+mal anime list username
+```
+
+- inc (increment chapter / episode):
+```
+mal manga inc name
+mal anime inv name
+```
+
+- incv (increment volume):
+```
+mal manga incv name
 ```
 
 ## References
 
 - [Unofficial MAL API](https://github.com/chuyeow/myanimelist-api)
 - [Official API](http://myanimelist.net/modules.php?go=api)
+- [Comparison of Anime Library APIs](http://taiga.erengy.com/api.html)
 
