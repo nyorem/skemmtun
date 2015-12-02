@@ -42,6 +42,21 @@ data Manga =
           }
 makeLenses ''Manga
 
+incrReadChapters :: Manga -> Manga
+incrReadChapters =
+    over mangaReadChapters (+1)
+incrReadVolumes :: Manga -> Manga
+incrReadVolumes =
+    over mangaReadVolumes (+1)
+
+changeStatusM :: MyStatus -> Manga -> Manga
+changeStatusM st =
+    over mangaStatus (const $ Just st)
+
+changeScoreM :: Int -> Manga -> Manga
+changeScoreM s =
+    over mangaScore (const s)
+
 mangaAttributes :: [Name]
 mangaAttributes =
     [ "series_title"
@@ -65,4 +80,27 @@ instance Show Manga where
                , show (_mangaReadVolumes m) ++ "/" ++ showInt (_mangaTotalVolumes m)
                , maybe "" show $ _mangaType m
                ]
+
+instance ToXML Manga where
+    toXml m =
+        unlines [ "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+                , "<entry>"
+                , "\t<chapter>" ++ show (_mangaReadChapters m) ++ "</chapter>"
+                , "\t<volume>" ++ show (_mangaReadVolumes m) ++ "</volume>"
+                , "\t<status>" ++ show (fromMyStatus $ _mangaStatus m) ++ "</status>"
+                , "\t<score>" ++ show (_mangaScore m) ++ "</score>"
+                , "\t<downloaded_chapters></downloaded_chapters>"
+                , "\t<times_reread></times_reread>"
+                , "\t<reread_value></reread_value>"
+                , "\t<date_start></date_start>"
+                , "\t<date_finish></date_finish>"
+                , "\t<priority></priority>"
+                , "\t<enable_discussion></enable_discussion>"
+                , "\t<enable_rereading></enable_rereading>"
+                , "\t<comments></comments>"
+                , "\t<scan_group></scan_group>"
+                , "\t<tags>" ++ T.unpack (_mangaTags m) ++ "</tags>"
+                , "\t<retail_volumes></retail_volumes>"
+                , "</entry>"
+                ]
 

@@ -15,3 +15,15 @@ toMyStatus 4 = Just Dropped
 toMyStatus 6 = Just Planned
 toMyStatus _ = Nothing
 
+fromMyStatus :: Maybe MyStatus -> Int
+fromMyStatus (Just Current)   = 1
+fromMyStatus (Just Completed) = 2
+fromMyStatus (Just OnHold)    = 3
+fromMyStatus (Just Dropped)   = 4
+fromMyStatus (Just Planned)   = 6
+fromMyStatus Nothing          = 0
+
+-- | Serialize a type to XML.
+class ToXML a where
+    toXml :: a -> String
+

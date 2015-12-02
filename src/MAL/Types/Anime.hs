@@ -40,6 +40,18 @@ data Anime =
           }
 makeLenses ''Anime
 
+incrWatchedEpisodes :: Anime -> Anime
+incrWatchedEpisodes =
+    over animeWatchedEpisodes (+1)
+
+changeStatusA :: MyStatus -> Anime -> Anime
+changeStatusA st =
+    over animeStatus (const $ Just st)
+
+changeScoreA :: Int -> Anime -> Anime
+changeScoreA s =
+    over animeScore (const s)
+
 animeAttributes :: [Name]
 animeAttributes =
     [ "series_title"
@@ -60,4 +72,27 @@ instance Show Anime where
                , maybe "" show $ _animeType a
                , show (_animeWatchedEpisodes a) ++ "/" ++ showInt (_animeTotalEpisodes a)
                ]
+
+instance ToXML Anime where
+    toXml a =
+        unlines [ "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+                , "<entry>"
+                , "\t<episode>" ++ show (_animeWatchedEpisodes a) ++ "</episode>"
+                , "\t<status>" ++ show (fromMyStatus $ _animeStatus a) ++ "</status>"
+                , "\t<score>" ++ show (_animeScore a) ++ "</score>"
+                , "\t<downloaded_episodes></downloaded_episodes>"
+                , "\t<storage_type></storage_type>"
+                , "\t<storage_value></storage_value>"
+                , "\t<times_rewatched></times_rewatched>"
+                , "\t<rewatch_value></rewatch_value>"
+                , "\t<date_start></date_start>"
+                , "\t<date_finish></date_finish>"
+                , "\t<priority></priority>"
+                , "\t<enable_discussion></enable_discussion>"
+                , "\t<enable_rewatching></enable_rewatching>"
+                , "\t<comments></comments>"
+                , "\t<fansub_group></fansub_group>"
+                , "\t<tags>" ++ T.unpack (_animeTags a) ++ "</tags>"
+                , "</entry>"
+                ]
 
