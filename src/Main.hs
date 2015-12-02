@@ -3,9 +3,10 @@ module Main where
 import MAL
 import System.Environment
 
-credentialsFile :: FilePath
-credentialsFile =
-    "mal.txt"
+credentialsFile :: IO FilePath
+credentialsFile = do
+    home <- getEnv "HOME"
+    return $ home ++ "/.mal.conf"
 
 main :: IO ()
 main = do
@@ -13,7 +14,8 @@ main = do
     case ecmd of
       Left err -> error err
       Right cmd -> do
-          creds <- readCredentials credentialsFile
+          file <- credentialsFile
+          creds <- readCredentials file
           verifyCredentials creds
           executeCommand creds cmd
 

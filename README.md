@@ -17,7 +17,7 @@ stack exec mal command
 ```
 where `command` is one of the commands described below.
 
-- A configuration file named `mal.txt` is needed. The format must be the following:
+- A configuration file named `$HOME/.mal.conf` is needed. The format must be the following:
 ```
 username = foo
 password = bar
