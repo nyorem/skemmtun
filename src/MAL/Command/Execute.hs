@@ -15,7 +15,8 @@ import Pretty
 import Utils
 
 executeCommand :: Credentials -> Command -> IO ()
-executeCommand creds (List m uname) =
+executeCommand creds (List m muname) = do
+    let uname = maybe (fst creds) id muname
     case m of
       AnimeMode -> animeList creds uname >>= displayAnimes . sortAndOrganizeBy _animeStatus
       MangaMode -> mangaList creds uname >>= displayMangas . sortAndOrganizeBy _mangaStatus

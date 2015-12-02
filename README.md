@@ -27,8 +27,8 @@ password = bar
 
 - list (mangas / animes):
 ```
-mal manga list username
-mal anime list username
+mal manga list [username]
+mal anime list [username]
 ```
 
 - inc (increment chapter / episode):
