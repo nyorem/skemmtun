@@ -23,7 +23,11 @@ listAttributes creds ty uname attrs = do
     r <- getWith opts' url
     let cur      = fromDocument . parseLBS_ def $ r ^. responseBody
         rootAxis = element "myanimelist" &/ element ty
-    return $ map (\attr -> cur $| rootAxis &/ element attr &/ content) attrs
+        errorAxis = cur $| element "myanimelist" &/ element "error" &/ content
+    if not . null $ errorAxis then
+        error $ "Invalid username: " ++ uname
+    else
+        return $ map (\attr -> cur $| rootAxis &/ element attr &/ content) attrs
 
 animeList :: Credentials -> String -> IO [Anime]
 animeList creds uname = do
