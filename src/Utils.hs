@@ -4,6 +4,7 @@ import Data.Function
 import Data.List
 import qualified Data.Text as T
 import qualified Data.Text.Read as T
+import Data.Time
 
 organizeBy :: (Eq b) => (a -> b) -> [a] -> [(b, [a])]
 organizeBy f =
@@ -31,4 +32,14 @@ untabs =
 showInt :: Int -> String
 showInt 0 = "-"
 showInt x = show x
+
+parseTime :: String -> Maybe UTCTime
+parseTime str =
+    case str of
+      "0000-00-00" -> Nothing
+      _            -> Just $ parseTimeOrError True defaultTimeLocale "%F" str
+
+showTime :: UTCTime -> String
+showTime =
+    formatTime defaultTimeLocale "%F"
 

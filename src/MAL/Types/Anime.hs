@@ -6,6 +6,7 @@ module MAL.Types.Anime where
 import Control.Lens
 import qualified Data.ByteString.Char8 as BS
 import qualified Data.Text as T
+import Data.Time
 import Text.XML
 
 import MAL.Types.Common
@@ -28,7 +29,6 @@ toAnimeType 5 = Just ONA
 toAnimeType 6 = Just Music
 toAnimeType _ = Nothing
 
--- TODO: add start/end dates
 data Anime =
     Anime { _animeName            :: T.Text            -- series_title
           , _animeId              :: Id                -- series_animedb_id
@@ -38,6 +38,8 @@ data Anime =
           , _animeScore           :: Int               -- my_score
           , _animeTags            :: T.Text            -- my_tags
           , _animeType            :: Maybe AnimeType   -- series_type
+          , _animeMyStartDate     :: Maybe UTCTime     -- my_start_date
+          , _animeMyEndDate       :: Maybe UTCTime     -- my_finish_date
           }
 makeLenses ''Anime
 
@@ -63,6 +65,8 @@ animeAttributes =
     , "my_score"
     , "my_tags"
     , "series_type"
+    , "my_start_date"
+    , "my_finish_date"
     ]
 
 instance Show Anime where
@@ -86,8 +90,8 @@ instance ToXML Anime where
                           , "\t<storage_value></storage_value>"
                           , "\t<times_rewatched></times_rewatched>"
                           , "\t<rewatch_value></rewatch_value>"
-                          , "\t<date_start></date_start>"
-                          , "\t<date_finish></date_finish>"
+                          , "\t<date_start>" ++ maybe "0000-00-00" showTime (_animeMyStartDate a) ++ "</date_start>"
+                          , "\t<date_finish>" ++ maybe "0000-00-00" showTime (_animeMyEndDate a) ++ "</date_finish>"
                           , "\t<priority>1</priority>"
                           , "\t<enable_discussion></enable_discussion>"
                           , "\t<enable_rewatching></enable_rewatching>"

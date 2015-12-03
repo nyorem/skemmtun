@@ -28,7 +28,7 @@ listAttributes creds ty uname attrs = do
 animeList :: Credentials -> String -> IO [Anime]
 animeList creds uname = do
     res <- listAttributes creds "anime" uname animeAttributes
-    let (titles:ids:statuses:watched_eps:series_eps:scores:tags:types:[]) = res
+    let (titles:ids:statuses:watched_eps:series_eps:scores:tags:types:starts:ends:[]) = res
         len          = length titles
         ids'         = map textToInt ids
         statuses'    = map (toMyStatus . textToInt) statuses
@@ -37,6 +37,8 @@ animeList creds uname = do
         scores'      = map textToInt scores
         tags'        = extendList len "" tags
         types'       = map (toAnimeType . textToInt) types
+        starts'      = map (parseTime . T.unpack) starts
+        ends'        = map (parseTime . T.unpack) ends
     return $ getZipList $ Anime <$> ZipList titles
                                 <*> ZipList ids'
                                 <*> ZipList statuses'
@@ -45,11 +47,13 @@ animeList creds uname = do
                                 <*> ZipList scores'
                                 <*> ZipList tags'
                                 <*> ZipList types'
+                                <*> ZipList starts'
+                                <*> ZipList ends'
 
 mangaList :: Credentials -> String -> IO [Manga]
 mangaList creds uname = do
     res <- listAttributes creds "manga" uname mangaAttributes
-    let (names:ids:statuses:read_chaps:series_chaps:read_vols:series_vols:scores:tags:types:[]) = res
+    let (names:ids:statuses:read_chaps:series_chaps:read_vols:series_vols:scores:tags:types:starts:ends:[]) = res
         len           = length names
         ids'          = map textToInt ids
         statuses'     = map (toMyStatus . textToInt) statuses
@@ -60,6 +64,8 @@ mangaList creds uname = do
         scores'       = map textToInt scores
         tags'         = extendList len "" tags
         types'        = map (toMangaType . textToInt) types
+        starts'      = map (parseTime . T.unpack) starts
+        ends'        = map (parseTime . T.unpack) ends
     return $ getZipList $ Manga <$> ZipList names
                                 <*> ZipList ids'
                                 <*> ZipList statuses'
@@ -70,3 +76,5 @@ mangaList creds uname = do
                                 <*> ZipList scores'
                                 <*> ZipList tags'
                                 <*> ZipList types'
+                                <*> ZipList starts'
+                                <*> ZipList ends'

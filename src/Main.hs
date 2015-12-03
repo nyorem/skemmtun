@@ -14,8 +14,7 @@ main = do
     case ecmd of
       Left err -> error err
       Right cmd -> do
-          file <- credentialsFile
-          creds <- readCredentials file
+          creds <- credentialsFile >>= readCredentials
           verifyCredentials creds
           executeCommand creds cmd
 
