@@ -7,7 +7,8 @@ data Mode = AnimeMode
 
 type Username = String
 
-data Command = List Mode (Maybe Username)
+data Command = Help
+             | List Mode (Maybe Username)
              | Inc Mode T.Text
              | IncVolume T.Text
 

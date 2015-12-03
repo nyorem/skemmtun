@@ -3,8 +3,6 @@
 module MAL.Command.Execute where
 
 import Control.Monad ( forM_ )
-import Data.List
-import Data.Ord
 import qualified Data.Text as T
 
 import MAL.API
@@ -15,6 +13,18 @@ import Pretty
 import Utils
 
 executeCommand :: Credentials -> Command -> IO ()
+executeCommand _ Help = do
+    mapM_ putStrLn $ [ "Usage: mal mode command"
+                     , ""
+                     , "- Available modes:"
+                     , "\tanime"
+                     , "\tmanaga"
+                     , "- Available commands:"
+                     , "\tlist"
+                     , "\tinc: increment chapter / episode number"
+                     , "\tincv: increment volume number"
+                     ]
+
 executeCommand creds (List m muname) = do
     let uname = maybe (fst creds) id muname
     case m of
@@ -23,37 +33,11 @@ executeCommand creds (List m muname) = do
 
 executeCommand creds (Inc m name) =
     case m of
-      AnimeMode -> do
-          let uname = fst creds
-          animes <- animeList creds uname
-          let manime = find (\a -> _animeName a == name) animes
-          case manime of
-            Nothing -> error $ "Anime " ++ (T.unpack name) ++ " not found!"
-            Just anime -> do
-                let n      = _animeId anime
-                    anime' = incrWatchedEpisodes anime
-                update creds anime' n "anime"
-      MangaMode -> do
-          let uname = fst creds
-          mangas <- mangaList creds uname
-          let mmanga = find (\a -> _mangaName a == name) mangas
-          case mmanga of
-            Nothing -> error $ "Manga " ++ (T.unpack name) ++ " not found!"
-            Just manga -> do
-                let n      = _mangaId manga
-                    manga' = incrReadChapters manga
-                update creds manga' n "manga"
+      AnimeMode -> update creds name animeList _animeName _animeId incrWatchedEpisodes "Anime"
+      MangaMode -> update creds name mangaList _mangaName _mangaId incrReadChapters "Manga"
 
-executeCommand creds (IncVolume name) = do
-    let uname = fst creds
-    mangas <- mangaList creds uname
-    let mmanga = find (\a -> _mangaName a == name) mangas
-    case mmanga of
-      Nothing -> error $ "Manga " ++ (T.unpack name) ++ " not found!"
-      Just manga -> do
-          let n      = _mangaId manga
-              manga' = incrReadVolumes manga
-          update creds manga' n "manga"
+executeCommand creds (IncVolume name) =
+    update creds name mangaList _mangaName _mangaId incrReadVolumes "Manga"
 
 displayAnimes :: [(Maybe MyStatus, [Anime])] -> IO ()
 displayAnimes xs =
@@ -83,8 +67,4 @@ displayMangas xs =
                           , ColDesc center "Volumes" center $ (\m -> show (_mangaReadVolumes m) ++ "/" ++ showInt (_mangaTotalVolumes m))
                           , ColDesc center "Type" center (maybe "" show . _mangaType)
                           ] ys
-
-sortAndOrganizeBy :: Ord b => (a -> b) -> [a] -> [(b, [a])]
-sortAndOrganizeBy f =
-    organizeBy f . sortBy (comparing f)
 
