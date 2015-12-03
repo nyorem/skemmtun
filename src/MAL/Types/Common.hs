@@ -25,6 +25,14 @@ fromMyStatus (Just Dropped)   = 4
 fromMyStatus (Just Planned)   = 6
 fromMyStatus Nothing          = 0
 
+parseMyStatus :: String -> Maybe MyStatus
+parseMyStatus "current"   = Just Current
+parseMyStatus "completed" = Just Completed
+parseMyStatus "onhold"    = Just OnHold
+parseMyStatus "dropped"   = Just Dropped
+parseMyStatus "planned"   = Just Planned
+parseMyStatus _           = Nothing
+
 type Id = Int
 
 -- | Serialize a type to XML.

@@ -1,5 +1,7 @@
 module MAL.Command.Types where
 
+import MAL.Types
+
 import qualified Data.Text as T
 
 data Mode = AnimeMode
@@ -8,7 +10,7 @@ data Mode = AnimeMode
 type Username = String
 
 data Command = Help
-             | List Mode (Maybe Username)
+             | List Mode (Maybe MyStatus) (Maybe Username)
              | Inc Mode T.Text
              | IncVolume T.Text
 

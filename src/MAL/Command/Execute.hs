@@ -25,11 +25,11 @@ executeCommand _ Help = do
                      , "\tincv: increment volume number"
                      ]
 
-executeCommand creds (List m muname) = do
+executeCommand creds (List m st muname) = do
     let uname = maybe (fst creds) id muname
     case m of
-      AnimeMode -> animeList creds uname >>= displayAnimes . sortAndOrganizeBy _animeStatus
-      MangaMode -> mangaList creds uname >>= displayMangas . sortAndOrganizeBy _mangaStatus
+      AnimeMode -> animeList creds uname >>= displayAnimes st . sortAndOrganizeBy _animeStatus
+      MangaMode -> mangaList creds uname >>= displayMangas st . sortAndOrganizeBy _mangaStatus
 
 executeCommand creds (Inc m name) =
     case m of
@@ -39,10 +39,14 @@ executeCommand creds (Inc m name) =
 executeCommand creds (IncVolume name) =
     update creds name mangaList _mangaName _mangaId incrReadVolumes "Manga"
 
-displayAnimes :: [(Maybe MyStatus, [Anime])] -> IO ()
-displayAnimes xs =
-    forM_ xs $ \(st, ys) -> do
-        case st of
+displayAnimes :: Maybe MyStatus -> [(Maybe MyStatus, [Anime])] -> IO ()
+displayAnimes st xs = do
+    let as =
+            case st of
+              Nothing -> xs
+              _        -> filter (\(s, _) -> s == st) xs
+    forM_ as $ \(st', ys) -> do
+        case st' of
           Nothing -> return ()
           Just s -> do
               print s
@@ -53,10 +57,14 @@ displayAnimes xs =
                           , ColDesc center "Progress" center $ (\a -> show (_animeWatchedEpisodes a) ++ "/" ++ showInt (_animeTotalEpisodes a))
                           ] ys
 
-displayMangas :: [(Maybe MyStatus, [Manga])] -> IO ()
-displayMangas xs =
-    forM_ xs $ \(st, ys) -> do
-        case st of
+displayMangas :: Maybe MyStatus -> [(Maybe MyStatus, [Manga])] -> IO ()
+displayMangas st xs = do
+    let ms =
+            case st of
+              Nothing -> xs
+              _        -> filter (\(s, _) -> s == st) xs
+    forM_ ms $ \(st', ys) -> do
+        case st' of
           Nothing -> return ()
           Just s -> do
               print s

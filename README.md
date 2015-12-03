@@ -2,7 +2,7 @@
 
 ## What is it?
 
-skemmtun (entertainment in Icelandic) is a [MAL](http://myanimelist.net) client written in Haskell.
+skemmtun (*entertainment* in Icelandic) is a [MAL](http://myanimelist.net) client written in Haskell.
 
 ## How to build/run?
 
@@ -27,8 +27,8 @@ password = bar
 
 - list (mangas / animes):
 ```
-mal manga list [username]
-mal anime list [username]
+mal manga list [status] [username]
+mal anime list [status] [username]
 ```
 
 - inc (increment chapter / episode):
