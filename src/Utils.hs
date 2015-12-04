@@ -60,11 +60,11 @@ maybeRead :: Read a => String -> Maybe a
 maybeRead str =
     case reads str of
       [(x, "")] -> Just x
-      _          -> Nothing
+      _         -> Nothing
 
 prompt :: String -> (a -> String) -> [a] -> IO (Maybe a)
 prompt a f xs = do
-    putStrLn $ a ++ " was not found."
+    putStrLn $ a ++ " is ambiguous."
     putStrLn $ "Perhaps you meant one of the following (q to quit):"
 
     let ys = zip [ (1 :: Int) .. ] xs

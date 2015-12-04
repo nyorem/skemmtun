@@ -4,12 +4,14 @@
 module MAL.Types.Anime where
 
 import Control.Lens
+import Control.Monad
 import qualified Data.ByteString.Char8 as BS
 import qualified Data.Text as T
 import Data.Time
 import Text.XML
 
 import MAL.Types.Common
+import Pretty
 import Utils
 
 data AnimeType = TV
@@ -77,6 +79,24 @@ instance Show Anime where
                , maybe "" show $ _animeType a
                , show (_animeWatchedEpisodes a) ++ "/" ++ showInt (_animeTotalEpisodes a)
                ]
+
+displayAnimes :: Maybe MyStatus -> [(Maybe MyStatus, [Anime])] -> IO ()
+displayAnimes st xs = do
+    let as =
+            case st of
+              Nothing -> xs
+              _        -> filter (\(s, _) -> s == st) xs
+    forM_ as $ \(st', ys) -> do
+        case st' of
+          Nothing -> return ()
+          Just s -> do
+              print s
+              renderTable [ ColDesc center "#" center (show . _animeId)
+                          , ColDesc left "Anime Name" left (T.unpack . _animeName)
+                          , ColDesc center "Score" center (showInt . _animeScore)
+                          , ColDesc center "Type" center (maybe "" show . _animeType)
+                          , ColDesc center "Progress" center $ (\a -> show (_animeWatchedEpisodes a) ++ "/" ++ showInt (_animeTotalEpisodes a))
+                          ] ys
 
 instance ToXML Anime where
     toXml a =

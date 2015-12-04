@@ -33,10 +33,10 @@ center = fillCenter ' '
 -- of column descriptors
 ppTable :: [ColDesc t] -> [t] -> String
 ppTable cs ts =
-    let header = map colTitle cs
-        rows = [[colValue c t | c <- cs] | t <- ts]
-        widths = [maximum $ map length col | col <- transpose $ header : rows]
-        separator = intercalate "-+-" [replicate width '-' | width <- widths]
+    let header             = map colTitle cs
+        rows               = [[colValue c t | c <- cs] | t <- ts]
+        widths             = [maximum $ map length col | col <- transpose $ header : rows]
+        separator          = intercalate "-+-" [replicate width '-' | width <- widths]
         fillCols fill cols = intercalate " | " [fill c width col | (c, width, col) <- zip3 cs widths cols]
     in
         unlines $ fillCols colTitleFill header : separator : map (fillCols colValueFill) rows

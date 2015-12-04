@@ -7,6 +7,7 @@ module MAL.API.List
 
 import Control.Applicative
 import Control.Lens ( (^.) )
+import Data.String
 import qualified Data.Text as T
 import Network.Wreq
 import Text.XML
@@ -16,13 +17,13 @@ import MAL.Credentials
 import MAL.Types
 import Utils
 
-listAttributes :: Credentials -> Name -> String -> [Name] -> IO [[T.Text]]
+listAttributes :: Credentials -> String -> String -> [Name] -> IO [[T.Text]]
 listAttributes creds ty uname attrs = do
-    let url   = concat ["http://myanimelist.net/malappinfo.php?u=", uname, "&status=all&type=", T.unpack . nameLocalName $ ty ]
+    let url   = concat ["http://myanimelist.net/malappinfo.php?u=", uname, "&status=all&type=", ty ]
         opts' = opts creds
     r <- getWith opts' url
     let cur      = fromDocument . parseLBS_ def $ r ^. responseBody
-        rootAxis = element "myanimelist" &/ element ty
+        rootAxis = element "myanimelist" &/ element (fromString ty)
         errorAxis = cur $| element "myanimelist" &/ element "error" &/ content
     if not . null $ errorAxis then
         error $ "Invalid username: " ++ uname
@@ -82,3 +83,4 @@ mangaList creds uname = do
                                 <*> ZipList types'
                                 <*> ZipList starts'
                                 <*> ZipList ends'
+

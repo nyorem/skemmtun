@@ -4,12 +4,14 @@
 module MAL.Types.Manga where
 
 import Control.Lens
+import Control.Monad
 import qualified Data.ByteString.Char8 as BS
 import qualified Data.Text as T
 import Data.Time
 import Text.XML
 
 import MAL.Types.Common
+import Pretty
 import Utils
 
 data MangaType = Tankobon
@@ -86,6 +88,25 @@ instance Show Manga where
                , show (_mangaReadVolumes m) ++ "/" ++ showInt (_mangaTotalVolumes m)
                , maybe "" show $ _mangaType m
                ]
+
+displayMangas :: Maybe MyStatus -> [(Maybe MyStatus, [Manga])] -> IO ()
+displayMangas st xs = do
+    let ms =
+            case st of
+              Nothing -> xs
+              _        -> filter (\(s, _) -> s == st) xs
+    forM_ ms $ \(st', ys) -> do
+        case st' of
+          Nothing -> return ()
+          Just s -> do
+              print s
+              renderTable [ ColDesc center "#" center (show . _mangaId)
+                          , ColDesc left "Manga Title" left (T.unpack . _mangaName)
+                          , ColDesc center "Score" center (showInt . _mangaScore)
+                          , ColDesc center "Chapters" center $ (\m -> show (_mangaReadChapters m) ++ "/" ++ showInt (_mangaTotalChapters m))
+                          , ColDesc center "Volumes" center $ (\m -> show (_mangaReadVolumes m) ++ "/" ++ showInt (_mangaTotalVolumes m))
+                          , ColDesc center "Type" center (maybe "" show . _mangaType)
+                          ] ys
 
 instance ToXML Manga where
     toXml m =

@@ -14,8 +14,8 @@ type Credentials =
 readCredentials :: FilePath -> IO Credentials
 readCredentials file = do
     contents <- readFile file
-    let ls = lines contents
-        (u, p) = (head ls, head . tail $ ls)
+    let ls      = lines contents
+        (u, p)  = (head ls, head . tail $ ls)
         extract = head . tail . words . snd . span (/= '=')
     return $ (extract u, extract p)
 

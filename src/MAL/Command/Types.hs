@@ -2,8 +2,6 @@ module MAL.Command.Types where
 
 import MAL.Types
 
-import qualified Data.Text as T
-
 data Mode = AnimeMode
           | MangaMode
 
