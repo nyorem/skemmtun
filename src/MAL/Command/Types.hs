@@ -12,6 +12,10 @@ data Command = Help
              | Inc Mode String
              | IncVolume String
              | Set Mode String CommandSet
+             | SetWatchedEpisodes Int String
+             | SetReadChapters Int String
+             | SetReadVolumes Int String
 
 data CommandSet = SetStatus MyStatus
+                | SetScore Int
 

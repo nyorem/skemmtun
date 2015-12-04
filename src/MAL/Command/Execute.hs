@@ -19,7 +19,7 @@ executeCommand _ Help = do
                      , "\tlist"
                      , "\tinc: increment chapter / episode number"
                      , "\tincv: increment volume number"
-                     , "\tset: change status"
+                     , "\tset: change status, score"
                      ]
 
 executeCommand creds (List m st muname) = do
@@ -41,5 +41,18 @@ executeCommand creds (Set m name cmd) =
       SetStatus st ->
           case m of
             AnimeMode -> update creds name animeList _animeName _animeId "Anime" $ changeStatusA st
-            MangaMode -> update creds name mangaList _mangaName _mangaId "Anime" $ changeStatusM st
+            MangaMode -> update creds name mangaList _mangaName _mangaId "Manga" $ changeStatusM st
+      SetScore s ->
+          case m of
+            AnimeMode -> update creds name animeList _animeName _animeId "Anime" $ changeScoreA s
+            MangaMode -> update creds name mangaList _mangaName _mangaId "Manga" $ changeScoreM s
+
+executeCommand creds (SetWatchedEpisodes n name) =
+    update creds name animeList _animeName _animeId "Anime" $ changeWatchedEpisodes n
+
+executeCommand creds (SetReadChapters n name) =
+    update creds name mangaList _mangaName _mangaId "Manga" $ changeReadChapters n
+
+executeCommand creds (SetReadVolumes n name) =
+    update creds name mangaList _mangaName _mangaId "Manga" $ changeReadVolumes n
 

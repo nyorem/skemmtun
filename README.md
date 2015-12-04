@@ -27,25 +27,28 @@ password = bar
 
 - list (mangas / animes):
 ```
-mal manga list [status] [username]
-mal anime list [status] [username]
+mal -m list [status] [username]
+mal -a list [status] [username]
 ```
 
 - inc (increment chapter / episode):
 ```
-mal manga inc name
-mal anime inv name
+mal -m inc name
+mal -a inv name
 ```
 
 - incv (increment volume):
 ```
-mal manga incv name
+mal -m incv name
 ```
 
 - set:
 ```
-mal manga set status onhold name
-mal anime set status dropped name
+mal -m set --status onhold name
+mal -a set --score 7 name
+mal -m set --read 100 name
+mal -m set --readv 20 name
+mal-a set --watched 13 name
 ```
 
 ## References

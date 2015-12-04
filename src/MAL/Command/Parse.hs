@@ -1,17 +1,16 @@
 module MAL.Command.Parse where
 
-import Data.List
-
 import MAL.Command.Types
 import MAL.Types.Common
+import Utils
 
 type ParseError = String
 
 parseArgs :: [String] -> Either ParseError Command
-parseArgs ("anime":xs) = parseArgs' AnimeMode xs
-parseArgs ("manga":xs) = parseArgs' MangaMode xs
-parseArgs (m:_)        = Left $ "Parse error: mode " ++ m ++ " unknown"
-parseArgs _            = Right Help
+parseArgs ("-a":xs) = parseArgs' AnimeMode xs
+parseArgs ("-m":xs) = parseArgs' MangaMode xs
+parseArgs (m:_)     = Left $ "Parse error: mode " ++ m ++ " unknown"
+parseArgs _         = Right Help
 
 -- TODO; remove ugly undefined (Either monad?)
 parseArgs' :: Mode -> [String] -> Either ParseError Command
@@ -26,24 +25,46 @@ parseArgs' m ("list":xs) =
               (st:uname:[]) ->
                   case parseMyStatus st of
                     Nothing -> (Nothing, Nothing, Left $ "Parse error: status " ++ st ++ " unknown")
-                    st' -> (st', Just uname, Right undefined)
-              _             -> (Nothing, Nothing, Left $ "Parse error: unknown arguments " ++ intercalate " " xs)
+                    st'     -> (st', Just uname, Right undefined)
+              _             -> (Nothing, Nothing, Left $ "Parse error: unknown arguments " ++ concatSpaces xs)
     in
         case err of
           Left _ -> err
-          _       -> Right $ List m s u
+          _      -> Right $ List m s u
 
-parseArgs' m ("inc":name) = Right $ Inc m $ intercalate " " name
+parseArgs' m ("inc":name) = Right $ Inc m $ concatSpaces name
 
-parseArgs' MangaMode ("incv":name) = Right $ IncVolume $ intercalate " " name
+parseArgs' MangaMode ("incv":name) = Right $ IncVolume $ concatSpaces name
+
+parseArgs' MangaMode ("set":"--read":n:name) =
+    case maybeRead n of
+      Nothing -> Left $ "Parse error: " ++ n ++ " is not a valid number."
+      Just n' -> Right $ SetReadChapters n' $ concatSpaces name
+
+parseArgs' MangaMode ("set":"--readv":n:name) =
+    case maybeRead n of
+      Nothing -> Left $ "Parse error: " ++ n ++ " is not a valid number."
+      Just n' -> Right $ SetReadVolumes n' $ concatSpaces name
+
+parseArgs' AnimeMode ("set":"--watched":n:name) =
+    case maybeRead n of
+      Nothing -> Left $ "Parse error: " ++ n ++ " is not a valid number."
+      Just n' -> Right $ SetWatchedEpisodes n' $ concatSpaces name
 
 parseArgs' m  ("set":xs) =
     case xs of
-      ("status":st:name) ->
+      ("--status":st:name) ->
           case parseMyStatus st of
             Nothing -> Left $ "Parse error: status " ++ st ++ "unknown"
-            Just s  -> Right $ Set m (intercalate " " name) (SetStatus s)
-      _               -> Left $ "Parse error: unkown subcommand " ++ intercalate " " xs
+            Just s  -> Right $ Set m (concatSpaces name) (SetStatus s)
+      ("--score":s:name) ->
+          case maybeRead s of
+            Nothing -> Left $ "Parse error: " ++ s ++ " is not a valid score"
+            Just s' -> if s' < 0 || s' > 10 then
+                            Left $ "Error: the score must be between 0 and 10."
+                        else
+                            Right $ Set m (concatSpaces name) (SetScore s')
+      _                  -> Left $ "Parse error: unkown subcommand " ++ concatSpaces xs
 
-parseArgs' _ xs               = Left $ "Parse error: command " ++ intercalate " " xs ++ " unknown"
+parseArgs' _ xs = Left $ "Parse error: command " ++ concatSpaces xs ++ " unknown"
 

@@ -49,13 +49,17 @@ incrWatchedEpisodes :: Anime -> Anime
 incrWatchedEpisodes =
     over animeWatchedEpisodes (+1)
 
+changeWatchedEpisodes :: Int -> Anime -> Anime
+changeWatchedEpisodes n =
+    set animeWatchedEpisodes n
+
 changeStatusA :: MyStatus -> Anime -> Anime
 changeStatusA st =
-    over animeStatus (const $ Just st)
+    set animeStatus (Just st)
 
 changeScoreA :: Int -> Anime -> Anime
-changeScoreA s =
-    over animeScore (const s)
+changeScoreA =
+    set animeScore
 
 animeAttributes :: [Name]
 animeAttributes =

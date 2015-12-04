@@ -54,6 +54,10 @@ showInt :: Int -> String
 showInt 0 = "-"
 showInt x = show x
 
+concatSpaces :: [String] -> String
+concatSpaces =
+    intercalate " "
+
 -- INPUT
 
 maybeRead :: Read a => String -> Maybe a

@@ -55,13 +55,21 @@ incrReadVolumes :: Manga -> Manga
 incrReadVolumes =
     over mangaReadVolumes (+1)
 
+changeReadChapters :: Int -> Manga -> Manga
+changeReadChapters =
+    set mangaReadChapters
+
+changeReadVolumes :: Int -> Manga -> Manga
+changeReadVolumes =
+    set mangaReadVolumes
+
 changeStatusM :: MyStatus -> Manga -> Manga
 changeStatusM st =
-    over mangaStatus (const $ Just st)
+    set mangaStatus (Just st)
 
 changeScoreM :: Int -> Manga -> Manga
-changeScoreM s =
-    over mangaScore (const s)
+changeScoreM =
+    set mangaScore
 
 mangaAttributes :: [Name]
 mangaAttributes =
