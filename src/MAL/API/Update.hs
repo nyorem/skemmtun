@@ -22,7 +22,7 @@ update' creds x n ty = do
     let url = "http://myanimelist.net/api/" ++ ty ++ "list/update/" ++ show n ++ ".xml"
         opts' = opts creds
     r <- postWith opts' url [ "data" := toXml x ]
-    if (r ^. responseStatus) /= updateOK then
+    if r ^. responseStatus /= updateOK then
         error "Error during the update"
     else
         return ()

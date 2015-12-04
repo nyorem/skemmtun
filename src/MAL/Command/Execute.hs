@@ -2,6 +2,9 @@
 
 module MAL.Command.Execute where
 
+import Control.Monad
+import qualified Data.Text as T
+
 import MAL.API
 import MAL.Credentials
 import MAL.Command.Types
@@ -55,4 +58,23 @@ executeCommand creds (SetReadChapters n name) =
 
 executeCommand creds (SetReadVolumes n name) =
     update creds name mangaList _mangaName _mangaId "Manga" $ changeReadVolumes n
+
+executeCommand creds (Search m req) = do
+    res <- searchFor creds (show m) req
+    putStrLn $ "Multiple results: choose one of the following (q to quit)"
+
+    forM_ res $ \(i, name) -> do
+        putStrLn $ show i ++ ") " ++ T.unpack name
+
+    c <- getLine
+    case c of
+      "q" -> return ()
+      mid ->
+          case maybeRead mid of
+            Nothing -> putStrLn "Not added!"
+            Just n -> do
+                -- TODO: add the chosen anime / manga
+                let n' = n :: Id
+                undefined
+                putStrLn "Added!"
 

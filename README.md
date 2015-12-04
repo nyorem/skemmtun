@@ -34,7 +34,7 @@ mal -a list [status] [username]
 - inc (increment chapter / episode):
 ```
 mal -m inc name
-mal -a inv name
+mal -a inc name
 ```
 
 - incv (increment volume):
@@ -49,6 +49,11 @@ mal -a set --score 7 name
 mal -m set --read 100 name
 mal -m set --readv 20 name
 mal-a set --watched 13 name
+```
+
+- search:
+```
+mal -a search name
 ```
 
 ## References

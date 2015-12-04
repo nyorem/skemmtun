@@ -66,5 +66,8 @@ parseArgs' m  ("set":xs) =
                             Right $ Set m (concatSpaces name) (SetScore s')
       _                  -> Left $ "Parse error: unkown subcommand " ++ concatSpaces xs
 
+parseArgs' m ("search":xs) =
+    Right $ Search m $ concatSpaces xs
+
 parseArgs' _ xs = Left $ "Parse error: command " ++ concatSpaces xs ++ " unknown"
 

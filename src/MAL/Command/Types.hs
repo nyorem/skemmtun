@@ -5,6 +5,10 @@ import MAL.Types
 data Mode = AnimeMode
           | MangaMode
 
+instance Show Mode where
+    show AnimeMode = "anime"
+    show MangaMode = "manga"
+
 type Username = String
 
 data Command = Help
@@ -15,6 +19,7 @@ data Command = Help
              | SetWatchedEpisodes Int String
              | SetReadChapters Int String
              | SetReadVolumes Int String
+             | Search Mode String
 
 data CommandSet = SetStatus MyStatus
                 | SetScore Int
