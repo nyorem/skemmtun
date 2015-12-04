@@ -1,7 +1,6 @@
 module MAL.Command.Parse where
 
 import Data.List
-import qualified Data.Text as T
 
 import MAL.Command.Types
 import MAL.Types.Common
@@ -34,9 +33,17 @@ parseArgs' m ("list":xs) =
           Left _ -> err
           _       -> Right $ List m s u
 
-parseArgs' m ("inc":name) = Right $ Inc m $ T.pack $ intercalate " " name
+parseArgs' m ("inc":name) = Right $ Inc m $ intercalate " " name
 
-parseArgs' MangaMode ("incv":name) = Right $ IncVolume $ T.pack $ intercalate " " name
+parseArgs' MangaMode ("incv":name) = Right $ IncVolume $ intercalate " " name
+
+parseArgs' m  ("set":xs) =
+    case xs of
+      ("status":st:name) ->
+          case parseMyStatus st of
+            Nothing -> Left $ "Parse error: status " ++ st ++ "unknown"
+            Just s  -> Right $ Set m (intercalate " " name) (SetStatus s)
+      _               -> Left $ "Parse error: unkown subcommand " ++ intercalate " " xs
 
 parseArgs' _ xs               = Left $ "Parse error: command " ++ intercalate " " xs ++ " unknown"
 

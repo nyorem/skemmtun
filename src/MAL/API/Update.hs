@@ -31,21 +31,22 @@ update' creds x n ty = do
 -- Generic function for updating stuff
 update :: (ToXML a)
        => Credentials
-       -> T.Text
+       -> String
        -> (Credentials -> String -> IO [a])
        -> (a -> T.Text)
        -> (a -> Id)
-       -> (a -> a)
        -> String
+       -> (a -> a)
        -> IO ()
-update creds name retrieve toText toId action prefix = do
+update creds name retrieve toText toId prefix action = do
     let uname = fst creds
     objects <- retrieve creds uname
-    let mobject = findPrefixes 5 (T.unpack . toText) (T.unpack name) objects
+    let mobject = findPrefixes 5 (T.unpack . toText) name objects
     case mobject of
-      [] -> error $ prefix ++ " " ++ (T.unpack name) ++ " not found!"
+      [] -> error $ prefix ++ " " ++ name ++ " not found!"
+      [o] -> update' creds (action o) (toId o) (toLowers prefix) >> putStrLn "Updated!"
       xs -> do
-          mx <- prompt (T.unpack name) (T.unpack . toText) xs
+          mx <- prompt name (T.unpack . toText) xs
           case mx of
             Nothing -> putStrLn "Not updated!"
             Just o -> update' creds (action o) (toId o) (toLowers prefix) >> putStrLn "Updated!"

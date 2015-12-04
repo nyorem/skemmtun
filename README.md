@@ -42,6 +42,12 @@ mal anime inv name
 mal manga incv name
 ```
 
+- set:
+```
+mal manga set status onhold name
+mal anime set status dropped name
+```
+
 ## References
 
 - [Unofficial MAL API](https://github.com/chuyeow/myanimelist-api)
