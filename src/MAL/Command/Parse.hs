@@ -55,11 +55,11 @@ parseArgs' m  ("set":xs) =
     case xs of
       ("--status":st:name) ->
           case parseMyStatus st of
-            Nothing -> Left $ "Parse error: status " ++ st ++ "unknown"
+            Nothing -> Left $ "Parse error: status " ++ st ++ "unknown."
             Just s  -> Right $ Set m (concatSpaces name) (SetStatus s)
       ("--score":s:name) ->
           case maybeRead s of
-            Nothing -> Left $ "Parse error: " ++ s ++ " is not a valid score"
+            Nothing -> Left $ "Parse error: " ++ s ++ " is not a valid score."
             Just s' -> if s' < 0 || s' > 10 then
                             Left $ "Error: the score must be between 0 and 10."
                         else
@@ -68,6 +68,11 @@ parseArgs' m  ("set":xs) =
 
 parseArgs' m ("search":xs) =
     Right $ Search m $ concatSpaces xs
+
+parseArgs' m ("delete":mn:_) =
+    case maybeRead mn of
+      Nothing -> Left $ error $ "Parse error: " ++ mn ++ " is not a valid Id."
+      Just n  -> Right $ Delete m n
 
 parseArgs' _ xs = Left $ "Parse error: command " ++ concatSpaces xs ++ " unknown"
 

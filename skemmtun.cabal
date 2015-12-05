@@ -18,6 +18,7 @@ executable mal
   other-modules:       MAL,
                        MAL.API,
                        MAL.API.Add,
+                       MAL.API.Delete,
                        MAL.API.List,
                        MAL.API.Search,
                        MAL.API.Update,

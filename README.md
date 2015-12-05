@@ -48,12 +48,17 @@ mal -m set --status onhold name
 mal -a set --score 7 name
 mal -m set --read 100 name
 mal -m set --readv 20 name
-mal-a set --watched 13 name
+mal -a set --watched 13 name
 ```
 
 - search/add:
 ```
 mal -a search name
+```
+
+- delete:
+```
+mal -m delete id
 ```
 
 ## References

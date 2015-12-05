@@ -10,7 +10,7 @@ module MAL.API.Add
 import Control.Monad ( void )
 import Data.Default
 import Data.Proxy
-import Network.Wreq hiding (Proxy)
+import Network.Wreq hiding ( Proxy )
 
 import MAL.Credentials
 import MAL.Types

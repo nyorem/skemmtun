@@ -21,6 +21,7 @@ data Command = Help
              | SetReadChapters Int String
              | SetReadVolumes Int String
              | Search Mode String
+             | Delete Mode Id
 
 data CommandSet = SetStatus MyStatus
                 | SetScore Int

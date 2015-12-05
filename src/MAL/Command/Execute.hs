@@ -24,6 +24,7 @@ executeCommand _ Help = do
                      , "\tincv: increment volume number (only manga mode)"
                      , "\tset: --status, --score, --read, --readv, --watched"
                      , "\tsearch: search and add animes / mangas"
+                     , "\tdelete: delete animes / mangas"
                      , ""
                      ]
 
@@ -75,4 +76,14 @@ executeCommand creds (Search m req) = do
                 addf creds n
                 putStrLn "Added!"
             _   -> putStrLn "Not added!"
+
+executeCommand creds (Delete m n) = do
+    putStrLn $ "Are you sure you want to delete " ++ show n ++ "? (o/n)"
+    c <- getChar
+    case c of
+      'o' -> do
+          let delf = if m == AnimeMode then deleteAnime else deleteManga
+          delf creds n
+          putStrLn "Deleted!"
+      _  -> putStrLn "Not deleted!"
 
