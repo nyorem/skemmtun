@@ -2,7 +2,6 @@
 
 module MAL.Command.Execute where
 
-import Control.Monad
 import qualified Data.Text as T
 
 import MAL.API
@@ -16,13 +15,16 @@ executeCommand _ Help = do
     mapM_ putStrLn $ [ "Usage: mal mode command"
                      , ""
                      , "- Available modes:"
-                     , "\tanime"
-                     , "\tmanaga"
+                     , "\t-a: anime"
+                     , "\t-m: tmanga"
+                     , ""
                      , "- Available commands:"
                      , "\tlist"
                      , "\tinc: increment chapter / episode number"
-                     , "\tincv: increment volume number"
-                     , "\tset: change status, score"
+                     , "\tincv: increment volume number (only manga mode)"
+                     , "\tset: --status, --score, --read, --readv, --watched"
+                     , "\tsearch: search and add animes / mangas"
+                     , ""
                      ]
 
 executeCommand creds (List m st muname) = do
@@ -61,20 +63,16 @@ executeCommand creds (SetReadVolumes n name) =
 
 executeCommand creds (Search m req) = do
     res <- searchFor creds (show m) req
-    putStrLn $ "Multiple results: choose one of the following (q to quit)"
-
-    forM_ res $ \(i, name) -> do
-        putStrLn $ show i ++ ") " ++ T.unpack name
-
-    c <- getLine
-    case c of
-      "q" -> return ()
-      mid ->
-          case maybeRead mid of
-            Nothing -> putStrLn "Not added!"
-            Just n -> do
-                -- TODO: add the chosen anime / manga
-                let n' = n :: Id
-                undefined
+    mn <- prompt' T.unpack res
+    case mn of
+      Nothing -> putStrLn "Not added!"
+      Just n -> do
+          putStrLn $ "Would you like to add it to your collection? (o/n)"
+          shouldAdd <- getChar
+          case shouldAdd of
+            'o' -> do
+                let addf = if m == AnimeMode then addAnime else addManga
+                addf creds n
                 putStrLn "Added!"
+            _   -> putStrLn "Not added!"
 

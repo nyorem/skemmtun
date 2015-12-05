@@ -6,6 +6,7 @@ module MAL.Types.Manga where
 import Control.Lens
 import Control.Monad
 import qualified Data.ByteString.Char8 as BS
+import Data.Default
 import qualified Data.Text as T
 import Data.Time
 import Text.XML
@@ -46,6 +47,11 @@ data Manga =
           , _mangaMyEndDate     :: Maybe UTCTime    -- my_finish_date
           }
 makeLenses ''Manga
+
+instance Default Manga where
+    -- By default, status = Planned
+    def =
+        Manga "" 0 (Just Planned) 0 0 0 0 0 "" Nothing Nothing Nothing
 
 incrReadChapters :: Manga -> Manga
 incrReadChapters =

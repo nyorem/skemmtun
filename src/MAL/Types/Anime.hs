@@ -6,6 +6,7 @@ module MAL.Types.Anime where
 import Control.Lens
 import Control.Monad
 import qualified Data.ByteString.Char8 as BS
+import Data.Default
 import qualified Data.Text as T
 import Data.Time
 import Text.XML
@@ -44,6 +45,11 @@ data Anime =
           , _animeMyEndDate       :: Maybe UTCTime     -- my_finish_date
           }
 makeLenses ''Anime
+
+instance Default Anime where
+    -- By default, status = Planned
+    def =
+        Anime "" 0 (Just Planned) 0 0 0 "" Nothing Nothing Nothing
 
 incrWatchedEpisodes :: Anime -> Anime
 incrWatchedEpisodes =

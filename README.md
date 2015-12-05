@@ -51,7 +51,7 @@ mal -m set --readv 20 name
 mal-a set --watched 13 name
 ```
 
-- search:
+- search/add:
 ```
 mal -a search name
 ```

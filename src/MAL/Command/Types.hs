@@ -4,6 +4,7 @@ import MAL.Types
 
 data Mode = AnimeMode
           | MangaMode
+          deriving (Eq)
 
 instance Show Mode where
     show AnimeMode = "anime"

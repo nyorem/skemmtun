@@ -18,7 +18,7 @@ import Utils
 
 searchFor :: Credentials -> String -> String -> IO [(Id, T.Text)]
 searchFor creds ty req = do
-    let url = concat [ "http://myanimelist.net/api/" ++ ty ++ "/search.xml" ]
+    let url   = concat [ "http://myanimelist.net/api/" ++ ty ++ "/search.xml" ]
         opts' = opts creds & param "q" .~ [T.pack req]
     r <- getWith opts' url
     if r ^. responseStatus /= ok200 then

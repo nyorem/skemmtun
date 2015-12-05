@@ -83,6 +83,18 @@ prompt a f xs = do
             Nothing -> return Nothing
             Just n -> return $ Just $ xs !! (n - 1)
 
+prompt' :: (a -> String) -> [(Int, a)] -> IO (Maybe Int)
+prompt' f xs = do
+    putStrLn $ "Multiple results: choose one of the following (q to quit)"
+
+    forM_ xs $ \(i, name) -> do
+        putStrLn $ show i ++ ") " ++ f name
+
+    c <- getLine
+    case c of
+      "q" -> return Nothing
+      mid -> return $ maybeRead mid
+
 -- TIME
 
 parseTime :: String -> Maybe UTCTime
