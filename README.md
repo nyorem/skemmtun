@@ -6,14 +6,17 @@ skemmtun (*entertainment* in Icelandic) is a [MAL](http://myanimelist.net) clien
 
 ## How to build/run?
 
-- Building:
+[stack](https://github.com/commercialhaskell/stack) is needed.
+
+- Building / installing:
 ```
 stack build
+stack install
 ```
 
 - Running:
 ```
-stack exec mal command
+mal command
 ```
 where `command` is one of the commands described below.
 
