@@ -1,16 +1,21 @@
 name:                skemmtun
 version:             0.1.0.0
--- synopsis:            
--- description:         
+synopsis:            A MyAnimeList.net client.
+description:         Contains most of the typical commands for listing/updating
+                     your anime/manga list on MyAnimeList.net.
+homepage:            https://github.com/nyorem/skemmtun
+bug-reports:         https://github.com/nyorem/skemmtun/issues
 license:             MIT
 license-file:        LICENSE
 author:              Jocelyn MEYRON
 maintainer:          Jocelyn.Meyron@grenoble-inp.org
--- copyright:           
 category:            Web
 build-type:          Simple
--- extra-source-files:  
 cabal-version:       >=1.10
+
+source-repository   head
+    type:           git
+    location:       git://github.com/nyorem/skemmtun
 
 executable mal
   ghc-options:         -Wall -O2
